@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>¿Más o menos? · Cifras del odio</title>
+<title>MÁS O MENOS · Minijuegos sobre el odio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -146,13 +146,141 @@ td.n{font-family:"Archivo Black";color:var(--accent);white-space:nowrap}
   .card .q{font-size:15.5px}
   .card .val{font-size:40px}
 }
+
+/* ---------- Adivina la cifra ---------- */
+.games{display:flex;flex-direction:column;align-items:center;gap:12px}
+.big2{font-size:16px;padding:12px 26px}
+#guess{display:none;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+#guess.on{display:flex}
+.gq{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 6% 24px;overflow:hidden;isolation:isolate}
+.gq .art{position:absolute;inset:0;z-index:-2;width:100%;height:100%}
+.gq::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.55))}
+.gq .ico{width:clamp(70px,11vw,120px);height:clamp(70px,11vw,120px);margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35))}
+.gq .tag{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);padding:5px 10px;border-radius:999px;margin-bottom:12px}
+.gq .q{font-size:clamp(20px,2.8vw,34px);font-weight:700;max-width:760px;line-height:1.22}
+.gq .src{margin-top:12px;font-size:12px;color:rgba(255,255,255,.75)}
+.panel{background:#121218;border-top:1px solid var(--line);padding:18px 6% 22px;display:flex;flex-direction:column;align-items:center}
+.gval{font-family:"Archivo Black","Arial Black",sans-serif;font-size:clamp(36px,5vw,56px);color:var(--accent);line-height:1}
+.gunit{color:var(--muted);font-size:14px;margin:4px 0 12px;min-height:18px}
+.barwrap{position:relative;width:min(820px,100%);padding:6px 0 26px}
+.bar{position:relative;height:14px;border-radius:999px;background:linear-gradient(90deg,#2a2a35,#3a3a48)}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#5f9bff,#c77dff,#ff5f6d);width:0}
+.bar input{position:absolute;inset:-14px 0;width:100%;height:42px;margin:0;opacity:0;cursor:grab;touch-action:none}
+.thumb{position:absolute;top:50%;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--accent);transform:translate(-50%,-50%);box-shadow:0 4px 18px rgba(0,0,0,.5);pointer-events:none}
+.ticks{position:absolute;left:0;right:0;bottom:0;height:18px;font-size:11.5px;color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.ticks span:first-child{transform:none}.ticks span:last-child{transform:translateX(-100%)}
+.mark{position:absolute;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;border:3px solid #fff}
+.mark.you{background:var(--accent)}
+.mark.real{background:var(--ok);width:28px;height:28px;transition:left 1s cubic-bezier(.2,.8,.2,1)}
+.mark label{position:absolute;bottom:130%;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap;background:#000;padding:2px 7px;border-radius:6px}
+.mark.real label{bottom:auto;top:130%;background:var(--ok);color:#06240f}
+.gap{position:absolute;top:0;bottom:0;background:rgba(255,77,94,.35);border-radius:999px}
+.fine{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.fine button{width:44px;height:40px;border-radius:12px;background:rgba(255,255,255,.08);color:#fff;font-size:20px;font-weight:700;border:1px solid var(--line)}
+.fine button:active{background:rgba(255,255,255,.2)}
+.go{background:var(--accent);color:#141414;font-family:"Archivo Black","Arial Black",sans-serif;font-size:18px;padding:13px 40px;border-radius:999px}
+.res{display:flex;gap:18px;align-items:baseline;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.res .pts{font-family:"Archivo Black","Arial Black",sans-serif;font-size:clamp(30px,4vw,44px)}
+.res .lbl{font-weight:700;font-size:18px}
+.res .cmp{color:var(--muted);font-size:14px}
+.gfact{font-size:14px;color:#e6e3ec;max-width:760px;text-align:center;margin:6px 0 14px}
+.gfact b{color:var(--accent)}
+.over-card.wide{max-width:760px}
+.rounds{display:grid;gap:8px;margin:0 auto 22px;text-align:left}
+.rounds div{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px}
+.rounds small{color:var(--muted)}
+.rounds b{font-family:"Archivo Black","Arial Black",sans-serif;color:var(--accent);font-size:16px;text-align:right}
+@media (max-width:760px){
+  .gq{padding:56px 18px 14px}
+  .gq .ico{width:48px;height:48px;margin-bottom:8px}
+  .gq .tag{font-size:10px;margin-bottom:8px}
+  .gq .q{font-size:18px}
+  .gq .src{font-size:10.5px;margin-top:8px}
+  .panel{padding:14px 18px calc(16px + env(safe-area-inset-bottom))}
+  .gval{font-size:38px}
+  .gunit{margin-bottom:8px}
+  .ticks{font-size:10px}
+  .go{font-size:16px;padding:12px 30px}
+  .res .lbl{font-size:16px}
+  .gfact{font-size:12.5px;margin:4px 0 10px}
+}
+@media (max-width:760px) and (max-height:700px){ .gq .ico{display:none} }
+
+.pill{white-space:nowrap}
+.fine .go{width:auto;height:auto;font-size:18px;border:0;background:var(--accent);color:#141414;font-family:"Archivo Black","Arial Black",sans-serif;padding:12px 34px;border-radius:999px}
+@media (max-width:760px){
+  .fine .go{font-size:16px;padding:11px 26px}
+  #gend{padding-top:84px}
+}
+@media (max-width:440px){
+  .brand{font-size:0;gap:0}
+  .brand .dot{width:22px;height:22px}
+  .pill{padding:5px 9px;font-size:12px}
+  .scores{gap:6px}
+}
+
+.glist{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:760px;margin:0 auto 22px}
+.gcard{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--ink);border-radius:18px;padding:16px 14px;text-align:left;display:flex;flex-direction:column;gap:4px;transition:.2s}
+.gcard:hover{background:rgba(255,255,255,.13);transform:translateY(-3px)}
+.gcard.hot{background:linear-gradient(135deg,rgba(255,210,63,.25),rgba(255,95,109,.18));border-color:rgba(255,210,63,.6)}
+.gcard .ge{font-size:26px}
+.gcard strong{font-size:16px}
+.gcard small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.mlabel{color:var(--muted);font-size:13px;margin:0 0 8px}
+.modes .mode{padding:10px 12px}
+.gq.compact{flex:0 0 auto;padding:62px 6% 14px}
+.gq.compact .ico{width:46px;height:46px;margin-bottom:6px}
+.gq.compact .q{font-size:clamp(18px,2.2vw,24px)}
+.panel.grow{flex:1;overflow-y:auto;justify-content:flex-start}
+.olist{width:min(720px,100%);display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
+.orow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:2px solid var(--line);border-radius:14px;padding:10px 10px 10px 12px;transition:transform .2s}
+.orow .num{font-family:"Archivo Black","Arial Black",sans-serif;color:var(--accent);font-size:20px;width:22px;text-align:center}
+.orow .txt{flex:1;font-size:14px;line-height:1.3}
+.orow .txt small{display:block;color:var(--accent);font-family:"Archivo Black","Arial Black",sans-serif;font-size:16px;margin-top:3px}
+.orow .arr{display:flex;flex-direction:column;gap:4px}
+.orow .arr button{width:40px;height:32px;border-radius:9px;background:rgba(255,255,255,.1);color:#fff;font-size:15px;border:1px solid var(--line)}
+.orow .arr button:disabled{opacity:.25}
+.orow.good{border-color:var(--ok);background:rgba(46,204,113,.12)}
+.orow.badr{border-color:var(--bad);background:rgba(255,77,94,.12)}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(620px,100%);margin:6px 0 14px}
+.choice{background:rgba(255,255,255,.07);border:2px solid var(--line);color:#fff;border-radius:16px;padding:14px 10px;font-weight:700;font-size:16px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.15s}
+.choice:hover{background:rgba(255,255,255,.14)}
+.choice small{font-family:"Archivo Black","Arial Black",sans-serif;color:var(--accent);font-size:18px}
+.choice.good{border-color:var(--ok);background:rgba(46,204,113,.18)}
+.choice.badr{border-color:var(--bad);background:rgba(255,77,94,.15)}
+.choice.big{font-size:20px;padding:20px 10px}
+.verd{font-family:"Archivo Black","Arial Black",sans-serif;font-size:22px;margin:4px 0 6px;text-align:center}
+.ice{width:min(300px,80vw);height:auto;display:block;margin:2px auto 6px;border-radius:14px}
+.icev{font-size:14px;color:#e6e3ec;margin-bottom:6px;text-align:center}
+.icev b{font-family:"Archivo Black","Arial Black",sans-serif;color:var(--accent);font-size:22px}
+.plain{width:min(520px,100%);margin:4px 0 12px}
+.plain input{width:100%;accent-color:var(--accent);height:30px}
+@media (max-width:760px){
+  .glist{grid-template-columns:1fr 1fr;gap:8px}
+  .gcard{padding:12px 11px}
+  .gcard .ge{font-size:22px}
+  .gcard strong{font-size:14.5px}
+  .gcard small{font-size:11.5px}
+  .modes{grid-template-columns:1fr 1fr}
+  .gq.compact{padding:54px 16px 10px}
+  .gq.compact .ico{display:none}
+  .gq.compact .q{font-size:17px}
+  .orow .txt{font-size:13px}
+  .orow{padding:8px 8px 8px 10px}
+  .choice{font-size:14.5px;padding:12px 8px}
+  .choice.big{font-size:18px;padding:16px 8px}
+  .verd{font-size:19px}
+  .ice{width:min(240px,64vw)}
+}
 </style>
 </head>
 <body>
 
 <header class="top">
-  <div class="brand" id="home"><span class="dot"></span>¿Más o menos?</div>
+  <div class="brand" id="home"><span class="dot"></span>MÁS O MENOS</div>
   <div class="scores" id="scores" style="display:none">
+    <div class="pill" id="pRound" style="display:none">Ronda <b id="rd">1/10</b></div>
     <div class="pill">Puntos <b id="sc">0</b></div>
     <div class="pill">Récord <b id="hi">0</b></div>
   </div>
@@ -162,17 +290,24 @@ td.n{font-family:"Archivo Black";color:var(--accent);white-space:nowrap}
 <section id="intro" class="screen on">
   <div class="intro-bg"></div>
   <div class="intro-card">
-    <span class="kicker">Minijuego · datos reales · España y UE</span>
-    <h1>¿Más o <span>menos?</span></h1>
-    <p class="lead">Delitos de odio, racismo, LGTBIfobia, discriminación… Adivina qué cifra es mayor y descubre cuánto sabes de verdad sobre el odio que nos rodea.</p>
+    <span class="kicker">Minijuegos · datos reales</span>
+    <h1>MÁS O <span>MENOS</span></h1>
+    <p class="lead">Delitos de odio, racismo, LGTBIfobia, discriminación… ¿Cuánto sabes de verdad sobre el odio que nos rodea? Elige un minijuego y descubre la realidad.</p>
+    <div class="glist">
+      <button class="gcard hot" id="playGuess"><span class="ge">🎯</span><strong>Adivina la cifra</strong><small>Mueve la barra hasta el dato real</small></button>
+      <button class="gcard" id="play"><span class="ge">⬆️⬇️</span><strong>Mayor o menor</strong><small>¿El siguiente dato es más o menos? Un fallo y fuera</small></button>
+      <button class="gcard" id="playOrder"><span class="ge">🔢</span><strong>Ordena la lista</strong><small>Coloca los datos de mayor a menor</small></button>
+      <button class="gcard" id="playMyth"><span class="ge">✅</span><strong>¿Mito o realidad?</strong><small>Verdadero o falso sobre el odio</small></button>
+      <button class="gcard" id="playMap"><span class="ge">📍</span><strong>Territorios</strong><small>¿Dónde se registran más delitos de odio?</small></button>
+      <button class="gcard" id="playIce"><span class="ge">🧊</span><strong>La punta del iceberg</strong><small>¿Cuántas víctimas no denuncian?</small></button>
+    </div>
+    <p class="mlabel">Tipo de datos para <b>Adivina la cifra</b> y <b>Mayor o menor</b>:</p>
     <div class="modes" id="modes">
       <button class="mode sel" data-m="mix"><strong>🎲 Mixto</strong><small>Todo mezclado</small></button>
       <button class="mode" data-m="casos"><strong>📊 Casos</strong><small>Hechos registrados por la policía</small></button>
       <button class="mode" data-m="pct"><strong>％ Encuestas</strong><small>Lo que cuentan las víctimas</small></button>
       <button class="mode" data-m="tasa"><strong>🗺️ Territorios</strong><small>Tasa por 100.000 habitantes</small></button>
     </div>
-    <button class="cta" id="play">Jugar</button>
-    <p class="howto">Verás un dato con su cifra. ¿El siguiente es <b>más</b> o <b>menos</b>? Un fallo y se acaba.</p>
     <div class="links"><button class="ghost" id="toData">Ver todas las cifras y fuentes</button></div>
   </div>
 </section>
@@ -184,11 +319,34 @@ td.n{font-family:"Archivo Black";color:var(--accent);white-space:nowrap}
   <div class="fact" id="fact"></div>
 </section>
 
+<!-- ADIVINA LA CIFRA -->
+<section id="guess" class="screen">
+  <div class="gq" id="gq"></div>
+  <div class="panel" id="panel"></div>
+</section>
+
+<!-- FIN ADIVINA -->
+<section id="gend" class="screen">
+  <div class="intro-bg"></div>
+  <div class="over-card wide">
+    <span class="kicker" id="gendk">Resultado final</span>
+    <div class="score" id="gfinal">0</div>
+    <p id="gmsg"></p>
+    <div class="rounds" id="grounds"></div>
+    <div class="links">
+      <button class="cta" id="gagain">Jugar otra vez</button>
+      <button class="ghost" id="ghome">Menú</button>
+      <button class="ghost" id="gdata">Ver cifras</button>
+    </div>
+    <p class="callout">Recuerda: las cifras policiales son solo la punta del iceberg. La mayoría de las víctimas de delitos de odio nunca denuncia.</p>
+  </div>
+</section>
+
 <!-- GAME OVER -->
 <section id="over" class="screen">
   <div class="intro-bg"></div>
   <div class="over-card">
-    <span class="kicker">Fin de la partida</span>
+    <span class="kicker">Mayor o menor · Fin de la partida</span>
     <div class="score" id="final">0</div>
     <p id="overMsg"></p>
     <div class="lastpair" id="lastpair"></div>
@@ -220,6 +378,8 @@ td.n{font-family:"Archivo Black";color:var(--accent);white-space:nowrap}
 const SRC = {
   int25:{t:"Ministerio del Interior – Informe sobre la evolución de los delitos e incidentes de odio en España 2025 (publicado en junio de 2026)",u:"https://www.interior.gob.es/opencms/es/detalle/articulo/Los-delitos-e-incidentes-de-odio-aumentaron-un-236-por-ciento-en-2025-y-registraron-la-mayor-cifra-de-la-serie-historica/",s:"Ministerio del Interior, informe 2025"},
   int24:{t:"Ministerio del Interior – Informe sobre la evolución de los delitos e incidentes de odio en España 2024",u:"https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/Paginas/2025/180725-informe-delitos-odio.aspx",s:"Ministerio del Interior, informe 2024"},
+  deb25:{t:"El Debate – tasas por comunidad y provincia del informe de Interior 2025",u:"https://www.eldebate.com/espana/castilla-y-leon/20260603/esta-provincia-tasa-alta-delitos-odio-espana_424889.html",s:"Ministerio del Interior, informe 2025"},
+  rtvc24:{t:"RTVC – tasas por comunidad del informe de Interior 2024",u:"https://rtvc.es/el-racismo-o-la-orientacion-sexual-detras-de-la-mayoria-de-delitos-de-odio-22-julio-2025/",s:"Ministerio del Interior, informe 2024"},
   int23:{t:"Ministerio del Interior – Informe 2024 (dato comparativo de 2023)",u:"https://rtvc.es/canarias-delitos-de-odio-2024/",s:"Ministerio del Interior, informe 2024"},
   intEnc:{t:"Ministerio del Interior – Encuesta sobre delitos de odio (2020-2021), recogida por Maldita.es",u:"https://maldita.es/malditateexplica/20211026/delitos-odio-denuncias-aumentan-encuesta-interior-mayoria-no-presentarse/",s:"Encuesta del Ministerio del Interior (2021)"},
   fraES:{t:"FRA (Agencia de Derechos Fundamentales de la UE) – EU LGBTIQ Survey III, ficha de España (2024, datos de 2023)",u:"https://fra.europa.eu/sites/default/files/fra_uploads/lgbtiq_survey-2024-country_sheet-spain.pdf",s:"FRA, Encuesta LGBTIQ III – España"},
@@ -300,6 +460,20 @@ const D = [
  {g:"tasa",th:"map",q:"Navarra: delitos de odio por cada 100.000 habitantes (2024)",v:14.0,u:"por 100.000 hab.",s:"int24",f:"La tasa más alta de España en 2024."},
  {g:"tasa",th:"map",q:"País Vasco: delitos de odio por cada 100.000 habitantes (2024)",v:10.8,u:"por 100.000 hab.",s:"int24",f:"Segunda en 2024."},
  {g:"tasa",th:"total",q:"Media de España: delitos de odio por cada 100.000 habitantes (2024)",v:4.02,u:"por 100.000 hab.",s:"int24",f:"En 2025 subió a 4,92."},
+ {g:"tasa",th:"map",q:"Cantabria: delitos de odio por cada 100.000 habitantes (2025)",v:5.72,u:"por 100.000 hab.",s:"deb25",f:"Por encima de la media española (4,92)."},
+ {g:"tasa",th:"map",q:"Comunitat Valenciana: delitos de odio por cada 100.000 habitantes (2025)",v:5.69,u:"por 100.000 hab.",s:"deb25",f:"Por encima de la media española (4,92)."},
+ {g:"tasa",th:"map",q:"Castilla y León: delitos de odio por cada 100.000 habitantes (2025)",v:5.67,u:"por 100.000 hab.",s:"deb25",f:"Segovia tuvo la tasa provincial más alta de toda España: 22,09."},
+ {g:"tasa",th:"map",q:"Comunidad de Madrid: delitos de odio por cada 100.000 habitantes (2025)",v:5.14,u:"por 100.000 hab.",s:"deb25",f:"Ligeramente por encima de la media española (4,92)."},
+ {g:"tasa",th:"map",q:"Castilla-La Mancha: delitos de odio por cada 100.000 habitantes (2025)",v:4.95,u:"por 100.000 hab.",s:"deb25",f:"Justo por encima de la media española (4,92)."},
+ {g:"tasa",th:"map",q:"Aragón: delitos de odio por cada 100.000 habitantes (2025)",v:4.05,u:"por 100.000 hab.",s:"deb25",f:"Por debajo de la media española (4,92)."},
+ {g:"tasa",th:"map",q:"Canarias: delitos de odio por cada 100.000 habitantes (2025)",v:3.82,u:"por 100.000 hab.",s:"deb25",f:"Empatada con Cataluña entre las tasas más bajas."},
+ {g:"tasa",th:"map",q:"Ceuta: delitos de odio por cada 100.000 habitantes (2024)",v:8.41,u:"por 100.000 hab.",s:"rtvc24",f:"En 2025 subió a 10,77."},
+ {g:"tasa",th:"map",q:"Melilla: delitos de odio por cada 100.000 habitantes (2024)",v:8.16,u:"por 100.000 hab.",s:"rtvc24",f:"En 2025 casi se triplicó: 21,89, la más alta de España."},
+ {g:"tasa",th:"map",q:"Extremadura: delitos de odio por cada 100.000 habitantes (2024)",v:2.09,u:"por 100.000 hab.",s:"rtvc24",f:"La tasa más baja de España en 2024."},
+ {g:"tasa",th:"map",q:"Andalucía: delitos de odio por cada 100.000 habitantes (2024)",v:2.59,u:"por 100.000 hab.",s:"rtvc24",f:"En 2025 subió a 3,40."},
+ {g:"tasa",th:"map",q:"Galicia: delitos de odio por cada 100.000 habitantes (2024)",v:2.85,u:"por 100.000 hab.",s:"rtvc24",f:"Entre las más bajas de España en 2024."},
+ {g:"tasa",th:"map",q:"Castilla-La Mancha: delitos de odio por cada 100.000 habitantes (2024)",v:3.0,u:"por 100.000 hab.",s:"rtvc24",f:"En 2025 subió a 4,95."},
+ {g:"tasa",th:"map",q:"Región de Murcia: delitos de odio por cada 100.000 habitantes (2024)",v:3.05,u:"por 100.000 hab.",s:"rtvc24",f:"Entre las más bajas de España en 2024."},
  {g:"tasa",th:"map",q:"Canarias: delitos de odio por cada 100.000 habitantes (2024)",v:3.50,u:"por 100.000 hab.",s:"int23",f:"Entre las comunidades con menos delitos de odio por habitante."}
 ];
 
@@ -364,7 +538,7 @@ function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a
 /* ================= FORMATO ================= */
 function fmt(d,v){
   if(v===undefined) v=d.v;
-  const dec = (d.g==="casos")?0:(Number.isInteger(d.v)?0:(d.g==="tasa"?2:1));
+  const dec = d.g==="casos"?0 : d.g==="tasa"?2 : (Number.isInteger(d.v)?0:1);
   let dd = (d.v===16.25)?2:dec;
   let s = v.toFixed(dd).split(".");
   s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");
@@ -382,7 +556,9 @@ $("hi").textContent=best;
 function show(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
   $(id).classList.add("on");
-  $("scores").style.display = (id==="game")?"flex":"none";
+  $("scores").style.display = (id==="game"||id==="guess")?"flex":"none";
+  $("pRound").style.display = (id==="guess")?"":"none";
+  if(id==="game"){ $("hi").textContent=best; }
   window.scrollTo(0,0);
 }
 
@@ -522,6 +698,367 @@ function buildData(){
   $("srcs").innerHTML=Object.values(SRC).map(s=>`<li><a href="${s.u}" target="_blank" rel="noopener">${s.t}</a></li>`).join("");
 }
 buildData();
+
+
+/* ================= ADIVINA LA CIFRA ================= */
+const keyOf=i=>D[i].q.replace(/\s*\(?\b(19|20)\d{2}\)?/g,"").trim().toLowerCase();
+function uniqueByKey(ids,n,usedKeys){usedKeys=usedKeys||new Set();const out=[];for(const i of ids){const k=keyOf(i);if(usedKeys.has(k))continue;usedKeys.add(k);out.push(i);if(out.length===n)break;}return out;}
+const SCALE = {
+  casos:{log:true,min:1,max:3000,ticks:[1,10,100,1000,3000]},
+  pct:{min:0,max:100,step:1,ticks:[0,25,50,75,100]},
+  tasa:{min:0,max:25,step:0.1,ticks:[0,5,10,15,20,25]}
+};
+const ROUNDS=10;
+let G={list:[],i:0,total:0,res:[],pos:500,locked:false};
+let gbest=0; try{gbest=+localStorage.getItem("cifras_best")||0}catch(e){}
+
+function posToVal(d,p){ // p 0..1000
+  const S=SCALE[d.g];
+  if(S.log){ return Math.round(Math.pow(10, Math.log10(S.min)+(p/1000)*(Math.log10(S.max)-Math.log10(S.min)))); }
+  const v=S.min+(p/1000)*(S.max-S.min); return Math.round(v/S.step)*S.step;
+}
+function valToPos(d,v){
+  const S=SCALE[d.g];
+  if(S.log){ v=Math.max(S.min,Math.min(S.max,v)); return 1000*(Math.log10(v)-Math.log10(S.min))/(Math.log10(S.max)-Math.log10(S.min)); }
+  return 1000*(Math.max(S.min,Math.min(S.max,v))-S.min)/(S.max-S.min);
+}
+function fmtGuess(d,v){
+  const dec = d.g==="tasa"?1:0;
+  let s=v.toFixed(dec).split("."); s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,"."); s=s.join(",");
+  return d.u==="%"? s+" %" : s;
+}
+function points(d,g){
+  let x;
+  if(d.g==="casos") x=Math.abs(Math.log(g/d.v))/0.35;
+  else if(d.g==="pct") x=Math.abs(g-d.v)/12;
+  else x=Math.abs(g-d.v)/2.5;
+  return Math.round(1000*Math.exp(-x));
+}
+function verdict(p){ return p>=900?"🎯 ¡Clavado!":p>=650?"🔥 ¡Muy cerca!":p>=350?"👍 Cerca":p>=100?"😬 Lejos":"❄️ Muy lejos"; }
+
+function newGuessGame(){
+  const ids=D.map((d,i)=>i).filter(i=>mode==="mix"||D[i].g===mode);
+  for(let k=ids.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[ids[k],ids[j]]=[ids[j],ids[k]];}
+  G={list:uniqueByKey(ids,ROUNDS),i:0,total:0,res:[],pos:500,locked:false};
+  LAST_REPLAY=newGuessGame; CUR=null; $("gq").className="gq"; $("panel").className="panel";
+  $("sc").textContent=0; $("hi").textContent=gbest;
+  show("guess"); $("pRound").style.display=""; drawRound();
+}
+function ticksHTML(d){
+  return SCALE[d.g].ticks.map(t=>`<span style="left:${valToPos(d,t)/10}%">${fmtGuess(d,t)}</span>`).join("");
+}
+function drawRound(){
+  const d=D[G.list[G.i]]; G.pos=500; G.locked=false;
+  $("rd").textContent=(G.i+1)+"/"+G.list.length;
+  $("gq").innerHTML = artSVG(d.th,(idSeq++)*31+G.i) + iconSVG(d.th) +
+    `<span class="tag">${TAG[d.g]}</span><div class="q">${d.q}</div><div class="src">Fuente: ${SRC[d.s].s}</div>`;
+  $("panel").innerHTML = `
+    <div class="gval" id="gv"></div>
+    <div class="gunit">${d.u==="%"?"tu estimación":d.u+" · tu estimación"}</div>
+    <div class="barwrap">
+      <div class="bar" id="bar"><div class="fill" id="fill"></div>
+        <div class="thumb" id="thumb"></div>
+        <input type="range" id="rng" min="0" max="1000" step="1" value="500" aria-label="Tu estimación">
+      </div>
+      <div class="ticks">${ticksHTML(d)}</div>
+    </div>
+    <div class="fine"><button id="minus" aria-label="Menos">−</button><button class="go" id="ok">Confirmar</button><button id="plus" aria-label="Más">+</button></div>`;
+  const rng=$("rng");
+  const upd=()=>{ G.pos=+rng.value; const v=posToVal(d,G.pos);
+    $("gv").textContent=fmtGuess(d,v); $("fill").style.width=(G.pos/10)+"%"; $("thumb").style.left=(G.pos/10)+"%"; };
+  rng.oninput=upd; upd();
+  const nudge=dir=>{ // un paso visible de valor
+    const cur=posToVal(d,G.pos); let p=G.pos;
+    for(let k=0;k<200;k++){ p=Math.max(0,Math.min(1000,p+dir)); if(posToVal(d,p)!==cur||p===0||p===1000) break; }
+    rng.value=p; upd(); };
+  $("minus").onclick=()=>nudge(-1); $("plus").onclick=()=>nudge(1);
+  $("ok").onclick=confirmGuess;
+}
+function confirmGuess(){
+  if(G.locked) return; G.locked=true;
+  const d=D[G.list[G.i]], g=posToVal(d,G.pos), pts=points(d,g);
+  G.total+=pts; G.res.push({i:G.list[G.i],g,pts});
+  const rp=valToPos(d,d.v)/10, yp=G.pos/10;
+  $("panel").innerHTML = `
+    <div class="res"><span class="lbl">${verdict(pts)}</span><span class="pts" style="color:${pts>=650?'var(--ok)':pts>=350?'var(--accent)':'var(--bad)'}">+${pts}</span></div>
+    <div class="res"><span class="cmp">Tú: <b>${fmtGuess(d,g)}</b> · Real: <b style="color:var(--ok)">${fmt(d)}</b> ${d.u==="%"?"":d.u}</span></div>
+    <div class="barwrap" style="margin-top:22px">
+      <div class="bar"><div class="gap" style="left:${Math.min(rp,yp)}%;width:${Math.abs(rp-yp)}%"></div>
+        <div class="mark you" style="left:${yp}%"><label>Tú</label></div>
+        <div class="mark real" id="mreal" style="left:${yp}%"><label>Real</label></div>
+      </div>
+      <div class="ticks" style="bottom:-6px;opacity:.6">${ticksHTML(d)}</div>
+    </div>
+    <div class="gfact" style="margin-top:14px"><b>Dato:</b> ${d.f}</div>
+    <button class="go" id="nx">${G.i+1<G.list.length?"Siguiente →":"Ver resultado"}</button>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $("mreal").style.left=rp+"%"; }));
+  // contador de puntos
+  const from=G.total-pts, t0=performance.now();
+  const gtok=G; (function step(t){if(G!==gtok||!$("guess").classList.contains("on")) return; const k=Math.min(1,(t-t0)/800); $("sc").textContent=Math.round(from+pts*k).toLocaleString("es-ES"); if(k<1) requestAnimationFrame(step);})(t0);
+  $("nx").onclick=()=>{ G.i++; if(G.i<G.list.length) drawRound(); else endGuess(); };
+}
+function endGuess(){
+  const max=G.list.length*1000, tot=G.total;
+  if(tot>gbest){gbest=tot; try{localStorage.setItem("cifras_best",gbest)}catch(e){}}
+  $("gfinal").textContent=tot.toLocaleString("es-ES").replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  const r=tot/max;
+  $("gmsg").textContent = `de ${max.toLocaleString("es-ES").replace(/\B(?=(\d{3})+(?!\d))/g,".")} puntos posibles. ` + (r>=.75?"¡Experto/a! Conoces muy bien la realidad del odio.":r>=.5?"¡Muy bien! Tienes buena intuición.":r>=.3?"No está mal… algunas cifras sorprenden, ¿verdad?":"Las cifras del odio sorprenden a casi todo el mundo. ¡Prueba otra vez!") + (tot>=gbest&&tot>0?" 🏆 Nuevo récord.":"");
+  $("grounds").innerHTML=G.res.map(x=>{const d=D[x.i];return `<div><span>${d.q}<br><small>Tú: ${fmtGuess(d,x.g)} · Real: ${fmt(d)}</small></span><b>+${x.pts}</b></div>`}).join("");
+  $("gendk").textContent="Adivina la cifra · Resultado";
+  show("gend");
+}
+document.addEventListener("keydown",e=>{
+  if(!$("guess").classList.contains("on")) return;
+  if(e.key==="Enter"){ const b=$("ok")||$("nx"); if(b) b.click(); }
+});
+$("playGuess").onclick=newGuessGame; $("gagain").onclick=()=>(LAST_REPLAY||newGuessGame)();
+$("ghome").onclick=()=>show("intro"); $("gdata").onclick=()=>show("data");
+
+
+/* ================= MOTOR GENÉRICO DE RONDAS ================= */
+let CUR=null, LAST_REPLAY=null;
+const nf=n=>Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
+function getBest(k){try{return +localStorage.getItem("mom_"+k)||0}catch(e){return 0}}
+function setBest(k,v){try{localStorage.setItem("mom_"+k,v)}catch(e){}}
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]];}return a;}
+function setQ(th,tag,q,src,compact){
+  const el=$("gq"); el.className="gq"+(compact?" compact":"");
+  el.innerHTML=artSVG(th,(idSeq++)*31+7)+iconSVG(th)+`<span class="tag">${tag}</span><div class="q">${q}</div>`+(src?`<div class="src">${src.startsWith("Datos")?src:"Fuente: "+src}</div>`:"");
+}
+function runGame(game){
+  G={list:[],i:0,total:0,res:[]};
+  CUR=Object.assign({i:0,total:0,rows:[]},game);
+  LAST_REPLAY=game.start;
+  $("sc").textContent=0; $("hi").textContent=nf(getBest(game.key));
+  show("guess"); stepRound();
+}
+function stepRound(){
+  $("rd").textContent=(CUR.i+1)+"/"+CUR.rounds.length;
+  $("panel").className="panel"+(CUR.grow?" grow":"");
+  $("panel").scrollTop=0;
+  CUR.draw(CUR.rounds[CUR.i]);
+}
+function finishRound(pts,row){
+  const from=CUR.total; CUR.total+=pts; CUR.rows.push({row,pts});
+  const t0=performance.now();
+  const tok=CUR; (function st(t){if(CUR!==tok) return; const k=Math.min(1,(t-t0)/700); $("sc").textContent=nf(from+pts*k); if(k<1) requestAnimationFrame(st);})(t0);
+  const b=document.createElement("button"); b.className="go"; b.id="nx";
+  b.textContent= CUR.i+1<CUR.rounds.length? "Siguiente →" : "Ver resultado";
+  b.onclick=()=>{ CUR.i++; if(CUR.i<CUR.rounds.length) stepRound(); else endGeneric(); };
+  $("panel").appendChild(b);
+}
+function endGeneric(){
+  const max=CUR.rounds.length*1000, tot=CUR.total, best=getBest(CUR.key);
+  if(tot>best) setBest(CUR.key,tot);
+  showEnd(CUR.title,tot,max,tot>best&&tot>0,CUR.rows.map(x=>`<div><span>${x.row}</span><b>+${x.pts}</b></div>`).join(""));
+}
+function showEnd(title,tot,max,rec,rowsHTML){
+  $("gendk").textContent=title+" · Resultado";
+  $("gfinal").textContent=nf(tot);
+  const r=tot/max;
+  $("gmsg").textContent=`de ${nf(max)} puntos posibles. `+(r>=.75?"¡Experto/a! Conoces muy bien la realidad del odio.":r>=.5?"¡Muy bien! Tienes buena intuición.":r>=.3?"No está mal… algunas cifras sorprenden, ¿verdad?":"Las cifras del odio sorprenden a casi todo el mundo. ¡Prueba otra vez!")+(rec?" 🏆 Nuevo récord.":"");
+  $("grounds").innerHTML=rowsHTML;
+  show("gend");
+}
+
+/* ---------- 🔢 ORDENA LA LISTA ---------- */
+function pickOrderSet(usedIds,usedKeys){
+  for(let tries=0;tries<300;tries++){
+    const g=["casos","casos","pct","tasa"][Math.floor(Math.random()*4)];
+    const ids=shuffle(D.map((d,i)=>i).filter(i=>D[i].g===g&&!usedIds.has(i)&&!usedKeys.has(keyOf(i))));
+    const out=[], ks=new Set();
+    for(const i of ids){
+      const v=D[i].v; if(ks.has(keyOf(i))) continue;
+      const ok=out.every(j=>{const w=D[j].v; return g==="casos"? Math.max(v,w)/Math.min(v,w)>=1.25 : g==="pct"? Math.abs(v-w)>=6 : Math.abs(v-w)>=1.2;});
+      if(ok){ out.push(i); ks.add(keyOf(i)); }
+      if(out.length===4){ out.forEach(j=>{usedIds.add(j);usedKeys.add(keyOf(j));}); return out; }
+    }
+  }
+}
+function startOrder(){
+  runGame({key:"order",title:"Ordena la lista",grow:true,start:startOrder,
+    rounds:(()=>{const u=new Set(),k=new Set();return Array.from({length:5},()=>pickOrderSet(u,k)).filter(Boolean);})(),
+    draw(set){
+      let cur=shuffle(set); const g=D[set[0]].g;
+      setQ("total","Ordena la lista","Ordena de <b>MAYOR</b> a <b>MENOR</b>","Datos: "+(g==="tasa"?"tasa por 100.000 habitantes":g==="pct"?"porcentajes":"número de casos"),true);
+      const paint=(reveal)=>{
+        const correct=set.slice().sort((a,b)=>D[b].v-D[a].v);
+        $("panel").innerHTML=`<div class="olist">${cur.map((i,k)=>`
+          <div class="orow ${reveal?(correct[k]===i?"good":"badr"):""}">
+            <span class="num">${k+1}</span>
+            <span class="txt">${D[i].q}${reveal?`<small>${fmt(D[i])} ${D[i].u==="%"?"":D[i].u} ${correct[k]===i?"✔":"· va en el "+(correct.indexOf(i)+1)+"º"}</small>`:""}</span>
+            ${reveal?"":`<span class="arr"><button data-k="${k}" data-d="-1" ${k===0?"disabled":""} aria-label="Subir">▲</button><button data-k="${k}" data-d="1" ${k===cur.length-1?"disabled":""} aria-label="Bajar">▼</button></span>`}
+          </div>`).join("")}</div>`+(reveal?"":`<button class="go" id="ok">Comprobar</button>`);
+        if(!reveal){
+          $("panel").querySelectorAll(".arr button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,d=+b.dataset.d;[cur[k],cur[k+d]]=[cur[k+d],cur[k]];paint(false);});
+          $("ok").onclick=()=>{
+            const hits=cur.filter((i,k)=>correct[k]===i).length;
+            paint(true);
+            const pts=hits===4?1000:hits*200;
+            $("panel").insertAdjacentHTML("afterbegin",`<div class="verd" style="color:${hits===4?"var(--ok)":hits>=2?"var(--accent)":"var(--bad)"}">${hits===4?"🎯 ¡Orden perfecto!":hits+" de 4 en su sitio"} · +${pts}</div>`);
+            finishRound(pts,`Ordenar ${correct.map(i=>fmt(D[i])).join(" › ")}<br><small>${hits} de 4 en su sitio</small>`);
+          };
+        }
+      };
+      paint(false);
+    }});
+}
+
+/* ---------- ✅ ¿MITO O REALIDAD? ---------- */
+const MYTHS=[
+ {t:"La mayoría de las víctimas de delitos de odio lo denuncia a la policía.",a:false,th:"police",e:"Falso. En la encuesta del Ministerio del Interior, el 89 % de las personas que se consideraban víctimas no denunció.",s:"intEnc"},
+ {t:"El racismo y la xenofobia son el primer motivo de los delitos de odio registrados en España.",a:true,th:"race",e:"Realidad. En 2025 hubo 934 hechos por racismo y xenofobia, la categoría más numerosa.",s:"int25"},
+ {t:"En 2025 los delitos de odio bajaron en España.",a:false,th:"total",e:"Falso. Subieron un 23,6 % hasta 2.417 hechos, la cifra más alta desde 2014.",s:"int25"},
+ {t:"La gran mayoría de las personas detenidas o investigadas por delitos de odio son hombres.",a:true,th:"police",e:"Realidad. En 2025, el 78,5 % eran hombres.",s:"int25"},
+ {t:"La LGTBIfobia es el segundo motivo más frecuente de delito de odio en España.",a:true,th:"lgtb",e:"Realidad. En 2025 se registraron 571 hechos por orientación sexual e identidad de género.",s:"int25"},
+ {t:"Los menores de edad casi nunca son víctimas de delitos de odio.",a:false,th:"child",e:"Falso. En 2025 hubo 290 víctimas menores, un 17 % más que el año anterior.",s:"int25"},
+ {t:"Más de la mitad de las personas LGTBIQ en España sufrió acoso por serlo en el último año.",a:true,th:"lgtb",e:"Realidad. Fue el 53 % según la encuesta de la FRA.",s:"fraES"},
+ {t:"La islamofobia fue el tipo de odio que más creció en 2025.",a:true,th:"faith",e:"Realidad. Creció un 133 %, y en internet un 450 %.",s:"int25"},
+ {t:"El odio en internet es algo residual: casi todo ocurre en la calle.",a:false,th:"phone",e:"Falso. En 2024 se registraron 215 delitos de odio a través de internet y redes, y la islamofobia online se disparó en 2025.",s:"int24"},
+ {t:"Las comunidades con más delitos de odio por habitante en 2025 fueron Madrid y Cataluña.",a:false,th:"map",e:"Falso. Las tasas más altas fueron Melilla, Navarra y Ceuta. Cataluña está entre las más bajas.",s:"int25"},
+ {t:"El acoso escolar a estudiantes LGTBIQ en la UE ha bajado desde 2019.",a:false,th:"school",e:"Falso. Pasó del 46 % en 2019 al 67 % en 2023.",s:"fraEU"},
+ {t:"La policía logra esclarecer más de la mitad de los delitos de odio registrados.",a:true,th:"check",e:"Realidad. En 2025 se esclareció el 65,6 % de los hechos.",s:"int25"},
+ {t:"Las personas LGTBIQ en España son más abiertas sobre su identidad que la media de la UE.",a:true,th:"lgtb",e:"Realidad. Un 60 % en España frente a un 51 % en la UE.",s:"fraES"},
+ {t:"La mayoría de las personas que sufren discriminación racial en España la denuncia.",a:false,th:"race",e:"Falso. Solo denuncia el 22,4 %.",s:"igu"},
+ {t:"Los delitos de odio contra personas con discapacidad casi no cambiaron en 2025.",a:false,th:"access",e:"Falso. La disfobia creció un 90 %, hasta 59 hechos.",s:"int25"},
+ {t:"Una de cada cuatro personas LGTBIQ en España evita ciertos lugares por miedo a ser agredida.",a:true,th:"eye",e:"Realidad. Lo hace a menudo o siempre el 27 %.",s:"fraES"}
+];
+function startMyth(){
+  runGame({key:"myth",title:"¿Mito o realidad?",start:startMyth,rounds:shuffle(MYTHS).slice(0,8),
+    draw(m){
+      setQ(m.th,"¿Mito o realidad?",m.t,"");
+      $("panel").innerHTML=`<div class="choices"><button class="choice big" data-a="1">✔ Realidad</button><button class="choice big" data-a="0">✘ Mito</button></div>`;
+      $("panel").querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+        const ans=b.dataset.a==="1", ok=ans===m.a;
+        $("panel").querySelectorAll(".choice").forEach(c=>{c.disabled=true; if((c.dataset.a==="1")===m.a) c.classList.add("good"); else if(c===b) c.classList.add("badr");});
+        $("panel").insertAdjacentHTML("beforeend",`<div class="verd" style="color:${ok?"var(--ok)":"var(--bad)"}">${ok?"✔ ¡Correcto! +1000":"✘ Fallaste · +0"}</div><div class="gfact">${m.e}<br><small style="color:var(--muted)">Fuente: ${SRC[m.s].s}</small></div>`);
+        finishRound(ok?1000:0,`${m.t}<br><small>${m.a?"Realidad":"Mito"} · ${ok?"acertaste":"fallaste"}</small>`);
+      });
+    }});
+}
+
+/* ---------- 📍 TERRITORIOS ---------- */
+function startMap(){
+  const yr=i=>(D[i].q.match(/\((\d{4})\)/)||[])[1];
+  const nm=i=>D[i].q.split(":")[0];
+  const reg=y=>D.map((d,i)=>i).filter(i=>D[i].g==="tasa"&&yr(i)===y&&!D[i].q.startsWith("Media"));
+  const R25=reg("2025"), R24=reg("2024");
+  const pool=[], seen=new Set();
+  const add=(key,q)=>{ if(!seen.has(key)){ seen.add(key); pool.push(q);} };
+  // A) más / menos entre 4 (2025 y 2024)
+  for(const [list,y,src] of [[R25,"2025","int25"],[R24,"2024","int24"]]){
+    for(let t=0;t<60;t++){
+      const opts=shuffle(list).slice(0,4);
+      const vals=opts.map(i=>D[i].v); if(new Set(vals).size<4) continue;
+      const hi=Math.random()<.55;
+      const key=(hi?"hi":"lo")+y+opts.slice().sort().join(",");
+      const right=opts.slice().sort((a,b)=>hi?D[b].v-D[a].v:D[a].v-D[b].v)[0];
+      add(key,{type:"pick",y,src,hi,opts,right,
+        q:`¿Qué territorio tuvo <b>${hi?"MÁS":"MENOS"}</b> delitos de odio por cada 100.000 habitantes en ${y}?`,
+        label:i=>"📍 "+nm(i), reveal:i=>fmt(D[i]),
+        fact:D[right].f+` La media de España fue ${y==="2025"?"4,92":"4,02"}.`,
+        sum:`${hi?"Más":"Menos"} delitos en ${y}: ${nm(right)} (${fmt(D[right])})`});
+    }
+  }
+  // B) ¿por encima o por debajo de la media? (2025)
+  shuffle(R25).forEach(i=>{
+    const up=D[i].v>4.92;
+    add("avg"+i,{type:"bin",src:"int25",
+      q:`En 2025, ¿<b>${nm(i)}</b> estuvo por encima o por debajo de la media española de delitos de odio por habitante (4,92)?`,
+      a:["⬆ Por encima","⬇ Por debajo"], right:up?0:1,
+      fact:`${nm(i)} tuvo ${fmt(D[i])} por cada 100.000 habitantes. ${D[i].f}`,
+      sum:`${nm(i)} 2025: ${fmt(D[i])} (${up?"por encima":"por debajo"} de la media)`});
+  });
+  // C) ¿subió o bajó de 2024 a 2025?
+  const pairs=[["Navarra",14.0,15.65],["País Vasco",10.8,8.65],["Ceuta",8.41,10.77],["Melilla",8.16,21.89],["Andalucía",2.59,3.40],["Castilla-La Mancha",3.00,4.95],["Canarias",3.50,3.82]];
+  pairs.forEach(([n,a,b])=>add("evo"+n,{type:"bin",src:"int25",
+    q:`¿La tasa de delitos de odio de <b>${n}</b> subió o bajó de 2024 a 2025?`,a:["📈 Subió","📉 Bajó"],right:b>a?0:1,
+    fact:`${n} pasó de ${String(a).replace(".",",")} a ${String(b).replace(".",",")} por cada 100.000 habitantes.`,sum:`${n}: ${String(a).replace(".",",")} → ${String(b).replace(".",",")}`}));
+  // D) preguntas especiales
+  add("prov",{type:"pick4",src:"deb25",q:"¿Qué <b>provincia</b> tuvo la tasa de delitos de odio más alta de toda España en 2025?",
+    opts:["Segovia","Madrid","Barcelona","Sevilla"],right:0,fact:"Segovia: 35 casos y 22,09 por cada 100.000 habitantes, incluso por encima de Melilla (21,89).",sum:"Provincia con la tasa más alta en 2025: Segovia (22,09)"});
+  add("abs",{type:"pick4",src:"int25",q:"De estas comunidades, ¿cuál registró <b>más hechos de odio en total</b> en 2025?",
+    opts:["Cataluña","Andalucía","Castilla y León","Baleares"],vals:["311","295","136","66"],right:0,
+    fact:"Cataluña registró 311 hechos, pero por población su tasa (3,82) es de las más bajas. Contar casos y contar tasas no es lo mismo.",sum:"Más hechos en total en 2025: Cataluña (311)"});
+  // mezcla equilibrada: 3 de elegir 2025, 1 de 2024, 2 de media, 1 de evolución, 1 especial
+  const by=f=>shuffle(pool.filter(f));
+  const hi25=by(q=>q.type==="pick"&&q.y==="2025"&&q.hi)[0];
+  const lo25=by(q=>q.type==="pick"&&q.y==="2025"&&!q.hi&&q.opts.filter(i=>hi25.opts.includes(i)).length<=1)[0]
+           || by(q=>q.type==="pick"&&q.y==="2025"&&!q.hi)[0];
+  const rounds=shuffle([hi25, lo25,
+    ...by(q=>q.type==="pick"&&q.y==="2024").slice(0,1),
+    ...by(q=>q.q.includes("media española")).slice(0,2),
+    ...by(q=>q.q.includes("subió o bajó")).slice(0,2),
+    ...by(q=>q.type==="pick4").slice(0,1)
+  ].filter(Boolean));
+  // evita que el mismo territorio sea la respuesta correcta dos veces seguidas
+  for(let k=1;k<rounds.length;k++){ const a=rounds[k-1],b=rounds[k]; if(a.type==="pick"&&b.type==="pick"&&a.right===b.right&&k+1<rounds.length){[rounds[k],rounds[k+1]]=[rounds[k+1],rounds[k]];} }
+  runGame({key:"map",title:"Territorios",start:startMap,rounds,
+    draw(r){
+      setQ("map","Territorios",r.q,SRC[r.src].s);
+      let btns;
+      if(r.type==="pick") btns=r.opts.map(i=>`<button class="choice" data-i="${i}">${r.label(i)}</button>`);
+      else if(r.type==="pick4") btns=r.opts.map((n,k)=>`<button class="choice" data-i="${k}">📍 ${n}</button>`);
+      else btns=r.a.map((t,k)=>`<button class="choice big" data-i="${k}">${t}</button>`);
+      $("panel").innerHTML=`<div class="choices">${btns.join("")}</div>`;
+      $("panel").querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+        const pick=+b.dataset.i, ok=pick===r.right;
+        $("panel").querySelectorAll(".choice").forEach(c=>{const i=+c.dataset.i;c.disabled=true;
+          if(r.type==="pick") c.innerHTML=`${r.label(i)}<small>${r.reveal(i)}</small>`;
+          if(r.type==="pick4"&&r.vals) c.innerHTML=`📍 ${r.opts[i]}<small>${r.vals[i]}</small>`;
+          if(i===r.right) c.classList.add("good"); else if(c===b) c.classList.add("badr");});
+        $("panel").insertAdjacentHTML("beforeend",`<div class="verd" style="color:${ok?"var(--ok)":"var(--bad)"}">${ok?"✔ ¡Correcto! +1000":"✘ Fallaste · +0"}</div><div class="gfact">${r.fact}</div>`);
+        finishRound(ok?1000:0,`${r.sum}<br><small>${ok?"acertaste":"fallaste"}</small>`);
+      });
+    }});
+}
+
+/* ---------- 🧊 LA PUNTA DEL ICEBERG ---------- */
+const ICE=[
+ {q:"De cada 100 víctimas de delitos de odio, ¿cuántas <b>NO</b> lo denuncian?",v:89,s:"intEnc",f:"Casi 9 de cada 10. Lo que vemos en las estadísticas oficiales es solo la punta del iceberg."},
+ {q:"De cada 100 personas LGTBIQ agredidas física o sexualmente en España, ¿cuántas <b>NO</b> fueron a la policía?",v:86,s:"fraES",f:"Solo el 14 % denunció la agresión a la policía."},
+ {q:"De cada 100 personas LGTBIQ discriminadas en España, ¿cuántas <b>NO</b> lo denunciaron ante ningún organismo?",v:91,s:"fraES",f:"Solo el 9 % acudió a un organismo de igualdad u otra entidad."},
+ {q:"De cada 100 personas que sufren discriminación por su origen racial o étnico, ¿cuántas <b>NO</b> denuncian?",v:77.6,s:"igu",f:"Solo denuncia el 22,4 %. Mucha gente cree que no servirá de nada o no sabe cómo hacerlo."}
+];
+function iceSVG(p,real){
+  const top=24,bot=196,y=v=>top+(1-v/100)*(bot-top);
+  const wl=y(p);
+  return `<svg class="ice" viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
+   <defs><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f6fb2"/><stop offset="1" stop-color="#0a2540"/></linearGradient>
+   <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ec8f2"/><stop offset="1" stop-color="#cfeefc"/></linearGradient>
+   <clipPath id="under"><rect x="0" y="${wl}" width="300" height="${210-wl}"/></clipPath></defs>
+   <rect width="300" height="210" fill="url(#sky)"/>
+   <rect y="${wl}" width="300" height="${210-wl}" fill="url(#sea)"/>
+   <path id="berg" d="M150 ${top} L178 52 L196 46 L214 88 L246 120 L236 160 L206 ${bot} L104 ${bot} L66 162 L58 124 L92 84 L112 60 L126 58 Z" fill="#ffffff" stroke="#bfe3f5" stroke-width="2"/>
+   <path d="M150 ${top} L178 52 L196 46 L214 88 L246 120 L236 160 L206 ${bot} L104 ${bot} L66 162 L58 124 L92 84 L112 60 L126 58 Z" fill="#6fb6e0" opacity=".85" clip-path="url(#under)"/>
+   <line x1="0" x2="300" y1="${wl}" y2="${wl}" stroke="#fff" stroke-width="2.5" stroke-dasharray="7 5"/>
+   ${real!==undefined?`<line x1="0" x2="300" y1="${y(real)}" y2="${y(real)}" stroke="#2ecc71" stroke-width="4"/><rect x="226" y="${y(real)-22}" width="66" height="19" rx="5" fill="#2ecc71"/><text x="259" y="${y(real)-8}" text-anchor="middle" font-size="12" font-weight="700" fill="#06240f" font-family="Inter,sans-serif">Real</text><rect x="8" y="${wl+4}" width="40" height="19" rx="5" fill="#ffd23f"/><text x="28" y="${wl+18}" text-anchor="middle" font-size="12" font-weight="700" fill="#141414" font-family="Inter,sans-serif">Tú</text>`:""}
+  </svg>`;
+}
+function startIce(){
+  runGame({key:"ice",title:"La punta del iceberg",grow:true,start:startIce,rounds:shuffle(ICE),
+    draw(r){
+      setQ("eye","La punta del iceberg",r.q,SRC[r.s].s,true);
+      let p=50;
+      const paint=()=>{ $("icebox").innerHTML=iceSVG(p); $("icev").innerHTML=`Bajo el agua (no denuncian): <b>${p}</b> de 100`; };
+      $("panel").innerHTML=`<div id="icebox"></div><div class="icev" id="icev"></div>
+        <div class="plain"><input type="range" id="irng" min="0" max="100" value="50" aria-label="Personas que no denuncian"></div>
+        <div class="fine"><button id="minus">−</button><button class="go" id="ok">Confirmar</button><button id="plus">+</button></div>`;
+      paint();
+      $("irng").oninput=e=>{p=+e.target.value;paint();};
+      $("minus").onclick=()=>{p=Math.max(0,p-1);$("irng").value=p;paint();};
+      $("plus").onclick=()=>{p=Math.min(100,p+1);$("irng").value=p;paint();};
+      $("ok").onclick=()=>{
+        const pts=Math.round(1000*Math.exp(-Math.abs(p-r.v)/10));
+        $("panel").innerHTML=`<div class="verd" style="color:${pts>=650?"var(--ok)":pts>=350?"var(--accent)":"var(--bad)"}">${verdict(pts)} · +${pts}</div>
+          <div id="icebox">${iceSVG(p,r.v)}</div>
+          <div class="icev">Tú: <b>${p}</b> · Real: <b style="color:var(--ok)">${String(r.v).replace(".",",")}</b> de cada 100 no denuncian</div>
+          <div class="gfact">${r.f}</div>`;
+        finishRound(pts,`${r.q.replace(/<\/?b>/g,"")}<br><small>Tú: ${p} · Real: ${String(r.v).replace(".",",")}</small>`);
+      };
+    }});
+}
+$("playOrder").onclick=startOrder; $("playMyth").onclick=startMyth; $("playMap").onclick=startMap; $("playIce").onclick=startIce;
 
 /* ================= EVENTOS ================= */
 document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{
