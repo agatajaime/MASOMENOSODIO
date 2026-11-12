@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Más o menos? · Cifras del odio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d12; --ink:#f5f3ee; --muted:#a9a6b3; --line:rgba(255,255,255,.12);
+  --ok:#2ecc71; --bad:#ff4d5e; --accent:#ffd23f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.45;overflow-x:hidden}
+h1,h2,.big{font-family:"Archivo Black",Inter,sans-serif;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer;border:0}
+a{color:var(--accent)}
+
+/* ---------- top bar ---------- */
+.top{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{font-family:"Archivo Black";font-size:15px;display:flex;gap:8px;align-items:center;cursor:pointer}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)}
+.scores{display:flex;gap:10px}
+.pill{background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid var(--line);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.pill b{color:var(--accent)}
+
+/* ---------- screens ---------- */
+.screen{display:none;min-height:100vh}
+.screen.on{display:block}
+
+/* intro */
+#intro{position:relative;display:none;align-items:center;justify-content:center;padding:90px 20px 40px;overflow:hidden}
+#intro.on{display:flex}
+.intro-bg{position:absolute;inset:0;background:
+  radial-gradient(60% 50% at 15% 20%,rgba(228,3,3,.35),transparent 70%),
+  radial-gradient(50% 50% at 85% 25%,rgba(0,77,255,.35),transparent 70%),
+  radial-gradient(60% 60% at 50% 100%,rgba(117,7,135,.45),transparent 70%);filter:saturate(1.2)}
+.intro-card{position:relative;max-width:760px;text-align:center}
+.kicker{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:6px 12px;border-radius:999px;margin-bottom:18px}
+#intro h1{font-size:clamp(44px,9vw,104px);line-height:.92;margin-bottom:18px}
+#intro h1 span{background:linear-gradient(90deg,#ff5f6d,#ffc371,#ffe66d,#5ee7a0,#5f9bff,#c77dff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:18px;color:#d8d5df;max-width:600px;margin:0 auto 26px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:0 auto 22px;max-width:700px}
+.mode{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--ink);padding:14px 12px;border-radius:16px;text-align:left;transition:.2s}
+.mode:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.mode.sel{border-color:var(--accent);background:rgba(255,210,63,.12)}
+.mode strong{display:block;font-size:15px}
+.mode small{color:var(--muted);font-size:12.5px}
+.cta{background:var(--accent);color:#141414;font-family:"Archivo Black";font-size:20px;padding:16px 40px;border-radius:999px;box-shadow:0 10px 40px rgba(255,210,63,.35);transition:.2s}
+.cta:hover{transform:scale(1.04)}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:12px 22px;border-radius:999px;font-weight:600}
+.ghost:hover{background:rgba(255,255,255,.08)}
+.howto{margin-top:26px;color:var(--muted);font-size:14px}
+.links{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* game */
+#game{position:relative;height:100vh;overflow:hidden}
+.track{display:flex;height:100%;transition:transform .7s cubic-bezier(.7,0,.2,1)}
+.card{position:relative;flex:0 0 50%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 6% 60px;overflow:hidden;isolation:isolate}
+.card .art{position:absolute;inset:0;z-index:-2}
+.card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
+.card .ico{width:clamp(80px,12vw,130px);height:clamp(80px,12vw,130px);margin-bottom:18px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35))}
+.card .tag{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);padding:5px 10px;border-radius:999px;margin-bottom:14px}
+.card .q{font-size:clamp(19px,2.3vw,28px);font-weight:700;max-width:520px;line-height:1.25}
+.card .has{color:#e7e3ee;margin:12px 0 6px;font-size:15px}
+.card .val{font-family:"Archivo Black";font-size:clamp(44px,6.5vw,84px);color:var(--accent);line-height:1;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+.card .unit{font-size:15px;color:#efeaf5;margin-top:6px}
+.card .src{position:absolute;bottom:18px;left:0;right:0;font-size:11.5px;color:rgba(255,255,255,.7);padding:0 18px}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:18px;width:min(260px,80%)}
+.btn{font-weight:700;font-size:18px;padding:14px 18px;border-radius:999px;border:2px solid #fff;color:#fff;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;gap:10px;transition:.18s}
+.btn:hover{background:#fff;color:#111}
+.btn svg{width:18px;height:18px}
+.hint{color:#e7e3ee;font-size:14px;margin-top:10px}
+
+.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center;font-family:"Archivo Black";font-size:22px;z-index:10;box-shadow:0 0 0 8px rgba(255,255,255,.15);transition:background .3s,color .3s,transform .3s}
+.vs.ok{background:var(--ok);color:#fff;transform:translate(-50%,-50%) scale(1.12)}
+.vs.bad{background:var(--bad);color:#fff;transform:translate(-50%,-50%) scale(1.12)}
+.vs svg{width:34px;height:34px}
+
+.fact{position:absolute;left:50%;bottom:22px;transform:translate(-50%,30px);opacity:0;z-index:12;background:rgba(10,10,14,.88);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:12px 16px;max-width:min(640px,92vw);font-size:14px;color:#e6e3ec;transition:.35s;pointer-events:none}
+.fact.on{opacity:1;transform:translate(-50%,0)}
+.fact b{color:var(--accent)}
+
+/* game over */
+#over{display:none;align-items:center;justify-content:center;padding:90px 20px 40px;position:relative;overflow:hidden}
+#over.on{display:flex}
+.over-card{position:relative;max-width:640px;text-align:center}
+.over-card .score{font-family:"Archivo Black";font-size:clamp(80px,16vw,150px);line-height:1;color:var(--accent)}
+.over-card p{color:#d8d5df;margin:10px auto 22px;max-width:520px}
+.lastpair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 auto 24px;text-align:left}
+.lastpair div{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13.5px}
+.lastpair b{display:block;font-family:"Archivo Black";font-size:24px;color:var(--accent);margin-top:4px}
+.callout{margin-top:26px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+
+/* data */
+#data{padding:90px 20px 60px}
+.wrap{max-width:980px;margin:0 auto}
+#data h2{font-size:clamp(30px,5vw,48px);margin-bottom:8px}
+#data .sub{color:var(--muted);margin-bottom:24px}
+.grp{margin:28px 0 10px;font-family:"Archivo Black";font-size:18px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+td.n{font-family:"Archivo Black";color:var(--accent);white-space:nowrap}
+.srcs li{margin:8px 0 8px 18px;font-size:14px;color:#d8d5df}
+.note{background:rgba(255,210,63,.08);border:1px solid rgba(255,210,63,.3);border-radius:14px;padding:14px 16px;font-size:14px;margin:18px 0}
+.help{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;margin-top:24px}
+
+@media (max-width:760px){
+  .track{flex-direction:column}
+  .card{flex:0 0 50%;padding:56px 18px 34px}
+  .card .ico{width:56px;height:56px;margin-bottom:8px}
+  .card .tag{margin-bottom:8px}
+  .card .q{font-size:17px}
+  .card .val{font-size:44px}
+  .card .src{bottom:8px;font-size:10.5px}
+  .btns{flex-direction:row;width:auto;margin-top:12px}
+  .btn{font-size:15px;padding:10px 18px}
+  .vs{width:56px;height:56px;font-size:17px}
+  .fact{bottom:10px;font-size:12.5px}
+  .lastpair{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand" id="home"><span class="dot"></span>¿Más o menos?</div>
+  <div class="scores" id="scores" style="display:none">
+    <div class="pill">Puntos <b id="sc">0</b></div>
+    <div class="pill">Récord <b id="hi">0</b></div>
+  </div>
+</header>
+
+<!-- INTRO -->
+<section id="intro" class="screen on">
+  <div class="intro-bg"></div>
+  <div class="intro-card">
+    <span class="kicker">Minijuego · datos reales · España y UE</span>
+    <h1>¿Más o <span>menos?</span></h1>
+    <p class="lead">Delitos de odio, racismo, LGTBIfobia, discriminación… Adivina qué cifra es mayor y descubre cuánto sabes de verdad sobre el odio que nos rodea.</p>
+    <div class="modes" id="modes">
+      <button class="mode sel" data-m="mix"><strong>🎲 Mixto</strong><small>Todo mezclado</small></button>
+      <button class="mode" data-m="casos"><strong>📊 Casos</strong><small>Hechos registrados por la policía</small></button>
+      <button class="mode" data-m="pct"><strong>％ Encuestas</strong><small>Lo que cuentan las víctimas</small></button>
+      <button class="mode" data-m="tasa"><strong>🗺️ Territorios</strong><small>Tasa por 100.000 habitantes</small></button>
+    </div>
+    <button class="cta" id="play">Jugar</button>
+    <p class="howto">Verás un dato a la izquierda. ¿El de la derecha es <b>más</b> o <b>menos</b>? Un fallo y se acaba.</p>
+    <div class="links"><button class="ghost" id="toData">Ver todas las cifras y fuentes</button></div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="screen">
+  <div class="track" id="track"></div>
+  <div class="vs" id="vs">VS</div>
+  <div class="fact" id="fact"></div>
+</section>
+
+<!-- GAME OVER -->
+<section id="over" class="screen">
+  <div class="intro-bg"></div>
+  <div class="over-card">
+    <span class="kicker">Fin de la partida</span>
+    <div class="score" id="final">0</div>
+    <p id="overMsg"></p>
+    <div class="lastpair" id="lastpair"></div>
+    <div class="links">
+      <button class="cta" id="again">Jugar otra vez</button>
+      <button class="ghost" id="overHome">Cambiar modo</button>
+      <button class="ghost" id="overData">Ver cifras</button>
+    </div>
+    <p class="callout">Recuerda: las cifras policiales son solo la punta del iceberg. La mayoría de las víctimas de delitos de odio nunca denuncia.</p>
+  </div>
+</section>
+
+<!-- DATA -->
+<section id="data" class="screen">
+  <div class="wrap">
+    <h2>Todas las cifras del juego</h2>
+    <p class="sub">Cada dato procede de un informe oficial o de una encuesta de referencia. Pulsa el título de arriba para volver.</p>
+    <div class="note"><b>Ojo al leer los datos.</b> Los “hechos registrados” son delitos e incidentes de odio conocidos por las Fuerzas y Cuerpos de Seguridad. Un aumento puede significar más odio, pero también que se denuncia más o que se registra mejor. Las encuestas (%) recogen experiencias que nunca llegan a una comisaría.</div>
+    <div id="tables"></div>
+    <div class="grp">Fuentes</div>
+    <ul class="srcs" id="srcs"></ul>
+    <div class="help"><b>¿Has sufrido o presenciado un delito de odio?</b> En una emergencia llama al <b>112</b>. Para denunciar: Policía Nacional <b>091</b>, Guardia Civil <b>062</b>, o tu policía autonómica o local. También puedes acudir a la Fiscalía especializada en delitos de odio de tu provincia o a asociaciones de apoyo a víctimas.</div>
+    <div class="links" style="margin-top:24px"><button class="cta" id="dataPlay">Jugar</button></div>
+  </div>
+</section>
+
+<script>
+/* ================= FUENTES ================= */
+const SRC = {
+  int25:{t:"Ministerio del Interior – Informe sobre la evolución de los delitos e incidentes de odio en España 2025 (publicado en junio de 2026)",u:"https://www.interior.gob.es/opencms/es/detalle/articulo/Los-delitos-e-incidentes-de-odio-aumentaron-un-236-por-ciento-en-2025-y-registraron-la-mayor-cifra-de-la-serie-historica/",s:"Ministerio del Interior, informe 2025"},
+  int24:{t:"Ministerio del Interior – Informe sobre la evolución de los delitos e incidentes de odio en España 2024",u:"https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/interior/Paginas/2025/180725-informe-delitos-odio.aspx",s:"Ministerio del Interior, informe 2024"},
+  int23:{t:"Ministerio del Interior – Informe 2024 (dato comparativo de 2023)",u:"https://rtvc.es/canarias-delitos-de-odio-2024/",s:"Ministerio del Interior, informe 2024"},
+  intEnc:{t:"Ministerio del Interior – Encuesta sobre delitos de odio (2020-2021), recogida por Maldita.es",u:"https://maldita.es/malditateexplica/20211026/delitos-odio-denuncias-aumentan-encuesta-interior-mayoria-no-presentarse/",s:"Encuesta del Ministerio del Interior (2021)"},
+  fraES:{t:"FRA (Agencia de Derechos Fundamentales de la UE) – EU LGBTIQ Survey III, ficha de España (2024, datos de 2023)",u:"https://fra.europa.eu/sites/default/files/fra_uploads/lgbtiq_survey-2024-country_sheet-spain.pdf",s:"FRA, Encuesta LGBTIQ III – España"},
+  fraEU:{t:"FRA – LGBTIQ equality at a crossroads (2024) / análisis de IGLYO y OII Europe",u:"https://fra.europa.eu/en/publication/2024/lgbtiq-equality-crossroads-progress-and-challenges",s:"FRA, Encuesta LGBTIQ III – media UE"},
+  igu:{t:"Ministerio de Igualdad – Estudio sobre percepción de la discriminación por origen racial o étnico (2024), recogido por elDiario.es",u:"https://www.eldiario.es/desalambre/resistencia-diaria-supervivencia-no-facil-xirou-xiao-estudio-revela-aumento-personas-sienten-discriminadas-origen-racial-etnico-espana_1_12146986.html",s:"Ministerio de Igualdad (2024)"},
+  ocat:{t:"Observatori contra l'Homofòbia de Catalunya – balance 2025, recogido por Ara",u:"https://es.ara.cat/sociedad/lgtbi-fobia-todavia-no-multa-pesar-existencia-leyes_1_5781179.html",s:"Observatori contra l'Homofòbia (2025)"},
+  edo:{t:"Informe Estado del Odio: Estado LGTBI+ 2025, recogido por El Salto",u:"https://www.elsaltodiario.com/lgtbiq/agresiones-personas-lgtbi+-informe-estado-odio",s:"Informe Estado del Odio LGTBI+ 2025"},
+  oii:{t:"OII Europe – análisis de los datos intersex de la Encuesta LGBTIQ III de la FRA",u:"https://www.oiieurope.org/?p=9621",s:"FRA / OII Europe (2024)"}
+};
+
+/* ================= DATOS =================
+   g: grupo comparable (casos | pct | tasa)
+   th: tema visual / icono                        */
+const D = [
+ // ---- CASOS (número absoluto) ----
+ {g:"casos",th:"total",q:"Delitos e incidentes de odio registrados en España en 2025",v:2417,u:"hechos",s:"int25",f:"Es la cifra más alta desde que empezó la serie en 2014: un 23,6 % más que en 2024."},
+ {g:"casos",th:"total",q:"Delitos e incidentes de odio registrados en España en 2024",v:1955,u:"hechos",s:"int24",f:"En 2024 los hechos bajaron un 13,8 % respecto a 2023… y en 2025 volvieron a dispararse."},
+ {g:"casos",th:"total",q:"Delitos e incidentes de odio registrados en España en 2023",v:2268,u:"hechos",s:"int23",f:"2023 fue el récord hasta que 2025 lo superó."},
+ {g:"casos",th:"race",q:"Delitos de odio por racismo y xenofobia en España en 2025",v:934,u:"hechos",s:"int25",f:"El racismo y la xenofobia son, año tras año, el primer motivo de los delitos de odio. Subieron un 16,1 %."},
+ {g:"casos",th:"race",q:"Delitos de odio por racismo y xenofobia en España en 2024",v:804,u:"hechos",s:"int24",f:"Aun bajando un 6 % ese año, siguieron siendo el motivo más frecuente."},
+ {g:"casos",th:"lgtb",q:"Delitos de odio por orientación sexual e identidad de género en España en 2025",v:571,u:"hechos",s:"int25",f:"La LGTBIfobia es el segundo motivo más frecuente de delito de odio en España."},
+ {g:"casos",th:"lgtb",q:"Delitos de odio por orientación sexual e identidad de género en España en 2024",v:528,u:"hechos",s:"int24",f:"Más de una de cada cuatro denuncias por odio en 2024 fue por LGTBIfobia."},
+ {g:"casos",th:"ideo",q:"Delitos de odio por ideología en España en 2025",v:241,u:"hechos",s:"int25",f:"Los delitos por ideología crecieron un 64 % en un solo año."},
+ {g:"casos",th:"gender",q:"Delitos de odio por discriminación de sexo o género en España en 2024",v:181,u:"hechos",s:"int24",f:"Es una categoría distinta de la violencia de género, que se contabiliza aparte."},
+ {g:"casos",th:"faith",q:"Delitos de odio por antisemitismo en España en 2025",v:69,u:"hechos",s:"int25",f:"El antisemitismo creció un 86,5 % en 2025."},
+ {g:"casos",th:"access",q:"Delitos de odio contra personas con discapacidad (disfobia) en 2025",v:59,u:"hechos",s:"int25",f:"La disfobia subió un 90 %. Es probablemente uno de los odios con más infradenuncia."},
+ {g:"casos",th:"faith",q:"Delitos de odio por islamofobia en España en 2025",v:35,u:"hechos",s:"int25",f:"La islamofobia fue lo que más creció (+133 %), y en internet se multiplicó: +450 %."},
+ {g:"casos",th:"home",q:"Delitos de odio por aporofobia (odio a las personas pobres) en 2024",v:24,u:"hechos",s:"int24",f:"La aporofobia aumentó un 33 % en 2024. Muchas víctimas viven en la calle y casi nunca denuncian."},
+ {g:"casos",th:"race",q:"Delitos de odio por antigitanismo en España en 2024",v:18,u:"hechos",s:"int24",f:"Las encuestas al pueblo gitano muestran una discriminación muchísimo mayor que la que llega a denunciarse."},
+ {g:"casos",th:"police",q:"Personas detenidas o investigadas por delitos de odio en 2025",v:1018,u:"personas",s:"int25",f:"El 78,5 % eran hombres; la franja de edad más frecuente, de 26 a 40 años."},
+ {g:"casos",th:"police",q:"Personas detenidas o investigadas por delitos de odio en 2024",v:905,u:"personas",s:"int24",f:"Casi el 82 % eran hombres."},
+ {g:"casos",th:"child",q:"Menores de edad víctimas de delitos de odio en 2025",v:290,u:"víctimas",s:"int25",f:"Un 17 % más que en 2024. Interior lo califica de “especialmente preocupante”."},
+ {g:"casos",th:"child",q:"Menores de edad víctimas de delitos de odio en 2024",v:247,u:"víctimas",s:"int25",f:"Y en 2025 subió a 290."},
+ {g:"casos",th:"threat",q:"Amenazas con motivación de odio registradas en España en 2025",v:446,u:"hechos",s:"int25",f:"Las amenazas fueron el tipo de delito de odio más frecuente en 2025."},
+ {g:"casos",th:"threat",q:"Lesiones (agresiones físicas) por odio registradas en España en 2025",v:441,u:"hechos",s:"int25",f:"Casi empatadas con las amenazas: más de una agresión física por odio al día."},
+ {g:"casos",th:"ideo",q:"Hechos de promoción o incitación a la discriminación en 2025",v:319,u:"hechos",s:"int25",f:"Incluye el discurso de odio, muy presente en redes sociales."},
+ {g:"casos",th:"threat",q:"Daños materiales por odio (pintadas, destrozos…) en 2025",v:119,u:"hechos",s:"int25",f:"Ataques a locales, sedes, lugares de culto o viviendas."},
+ {g:"casos",th:"phone",q:"Delitos de odio cometidos a través de internet y redes en 2024",v:215,u:"hechos",s:"int24",f:"Racismo y LGTBIfobia son también los motivos más frecuentes en el odio online."},
+ {g:"casos",th:"map",q:"Hechos de odio registrados en Andalucía en 2025",v:295,u:"hechos",s:"int25",f:"Racismo y xenofobia (102) y orientación sexual (75) fueron los motivos principales en Andalucía."},
+ {g:"casos",th:"map",q:"Hechos de odio registrados en Cataluña en 2025 (datos de Interior)",v:311,u:"hechos",s:"int25",f:"Aun así, Cataluña tiene una de las tasas por habitante más bajas."},
+ {g:"casos",th:"map",q:"Hechos de odio registrados en Castilla y León en 2025",v:136,u:"hechos",s:"int25",f:"Un aumento del 46 % respecto a 2024."},
+ {g:"casos",th:"map",q:"Hechos de odio registrados en Baleares en 2025",v:66,u:"hechos",s:"int25",f:"Un 29 % más que el año anterior."},
+ {g:"casos",th:"lgtb",q:"Incidencias LGTBIfóbicas recibidas por el Observatori contra l'Homofòbia de Cataluña en 2025",v:353,u:"incidencias",s:"ocat",f:"Más que los hechos que Interior registra en toda Cataluña por todos los motivos juntos: las ONG detectan lo que no llega a la policía."},
+
+ // ---- PORCENTAJES (encuestas y perfiles) ----
+ {g:"pct",th:"lgtb",q:"Personas LGTBIQ en España que sufrieron acoso por serlo en el último año",v:53,u:"%",s:"fraES",f:"Más de la mitad. La media de la UE es del 54 %."},
+ {g:"pct",th:"scale",q:"Personas LGTBIQ en España que se sintieron discriminadas en algún ámbito de su vida en el último año",v:37,u:"%",s:"fraES",f:"Bares, tiendas, hospitales, trabajo… Igual que la media europea."},
+ {g:"pct",th:"eye",q:"Personas LGTBIQ en España que evitan a menudo ciertos lugares por miedo a ser agredidas",v:27,u:"%",s:"fraES",f:"Más de una de cada cuatro cambia su ruta o sus planes por miedo."},
+ {g:"pct",th:"work",q:"Personas LGTBIQ en España discriminadas en el trabajo o buscando empleo en el último año",v:19,u:"%",s:"fraES",f:"Casi una de cada cinco."},
+ {g:"pct",th:"threat",q:"Personas LGTBIQ en España atacadas física o sexualmente en los últimos 5 años",v:12,u:"%",s:"fraES",f:"Más de una de cada diez."},
+ {g:"pct",th:"police",q:"Personas LGTBIQ en España que denunciaron a la policía una agresión física o sexual sufrida",v:14,u:"%",s:"fraES",f:"El 86 % restante no fue a la policía. Por eso las cifras oficiales se quedan cortas."},
+ {g:"pct",th:"scale",q:"Personas LGTBIQ en España que denunciaron una discriminación ante un organismo de igualdad u otra entidad",v:9,u:"%",s:"fraES",f:"Solo 9 de cada 100 lo denuncian."},
+ {g:"pct",th:"lgtb",q:"Personas LGTBIQ en España que son bastante o muy abiertas sobre su identidad",v:60,u:"%",s:"fraES",f:"Por encima de la media de la UE (51 %). Un dato de progreso."},
+ {g:"pct",th:"school",q:"Personas LGTBIQ en España cuya educación escolar nunca trató temas LGTBIQ",v:66,u:"%",s:"fraES",f:"Dos de cada tres. En la UE, el 62 %."},
+ {g:"pct",th:"school",q:"Estudiantes LGTBIQ de la UE que sufrieron acoso escolar (bullying)",v:67,u:"%",s:"fraEU",f:"En 2019 era el 46 %. El acoso escolar ha aumentado mucho."},
+ {g:"pct",th:"lgtb",q:"Personas intersexuales en la UE que sufrieron acoso por odio en el último año",v:74,u:"%",s:"oii",f:"Las personas trans e intersex son las más golpeadas por la violencia."},
+ {g:"pct",th:"race",q:"Personas en España que se sienten discriminadas por su origen racial o étnico",v:33,u:"%",s:"igu",f:"Subió del 31 % (2020) al 33 % (2024)."},
+ {g:"pct",th:"police",q:"Víctimas de discriminación racial o étnica en España que llegan a denunciar",v:22.4,u:"%",s:"igu",f:"Muchas personas creen que denunciar no servirá de nada o no saben cómo hacerlo."},
+ {g:"pct",th:"eye",q:"Víctimas de delitos de odio que NO denunciaron (encuesta de Interior)",v:89,u:"%",s:"intEnc",f:"Casi 9 de cada 10 víctimas no denuncian. Es la llamada “cifra negra”."},
+ {g:"pct",th:"police",q:"Detenidos e investigados por delitos de odio que eran hombres (2025)",v:78.5,u:"%",s:"int25",f:"El perfil del agresor es mayoritariamente masculino."},
+ {g:"pct",th:"check",q:"Delitos de odio esclarecidos por la policía en 2025",v:65.6,u:"%",s:"int25",f:"En 2024 se esclareció el 71,9 %."},
+ {g:"pct",th:"check",q:"Delitos de odio esclarecidos por la policía en 2024",v:71.9,u:"%",s:"int24",f:"Cuatro puntos más que en 2023."},
+ {g:"pct",th:"total",q:"Víctimas de delitos de odio en 2025 que eran hombres",v:62.3,u:"%",s:"int25",f:"La franja de edad más afectada: de 26 a 40 años."},
+ {g:"pct",th:"child",q:"Victimizaciones por delitos de odio en 2025 que afectaron a menores",v:13,u:"%",s:"int25",f:"Más de una de cada ocho víctimas era menor de edad."},
+ {g:"pct",th:"lgtb",q:"Personas LGTBI+ encuestadas en España que sufrieron agresiones físicas o verbales (2025)",v:16.25,u:"%",s:"edo",f:"En 2024 era el 6,8 %. En pueblos de menos de 10.000 habitantes sube al 20,8 %."},
+
+ // ---- TASAS (por 100.000 habitantes, 2025) ----
+ {g:"tasa",th:"map",q:"Melilla: delitos de odio por cada 100.000 habitantes (2025)",v:21.89,u:"por 100.000 hab.",s:"int25",f:"La tasa más alta de España en 2025."},
+ {g:"tasa",th:"map",q:"Navarra: delitos de odio por cada 100.000 habitantes (2025)",v:15.65,u:"por 100.000 hab.",s:"int25",f:"Navarra lideró en 2024 y fue segunda en 2025."},
+ {g:"tasa",th:"map",q:"Ceuta: delitos de odio por cada 100.000 habitantes (2025)",v:10.77,u:"por 100.000 hab.",s:"int25",f:"Tercera tasa más alta."},
+ {g:"tasa",th:"map",q:"País Vasco: delitos de odio por cada 100.000 habitantes (2025)",v:8.65,u:"por 100.000 hab.",s:"int25",f:"Una tasa alta también puede reflejar que se denuncia y se registra mejor."},
+ {g:"tasa",th:"map",q:"Asturias: delitos de odio por cada 100.000 habitantes (2025)",v:7.01,u:"por 100.000 hab.",s:"int25",f:"Quinta comunidad con la tasa más alta."},
+ {g:"tasa",th:"map",q:"Baleares: delitos de odio por cada 100.000 habitantes (2025)",v:5.33,u:"por 100.000 hab.",s:"int25",f:"Por encima de la media estatal."},
+ {g:"tasa",th:"total",q:"Media de España: delitos de odio por cada 100.000 habitantes (2025)",v:4.92,u:"por 100.000 hab.",s:"int25",f:"En 2024 era de 4,02."},
+ {g:"tasa",th:"map",q:"La Rioja: delitos de odio por cada 100.000 habitantes (2025)",v:4.29,u:"por 100.000 hab.",s:"int25",f:"Por debajo de la media estatal."},
+ {g:"tasa",th:"map",q:"Cataluña: delitos de odio por cada 100.000 habitantes (2025)",v:3.82,u:"por 100.000 hab.",s:"int25",f:"Una de las más bajas… aunque las ONG catalanas registran récords de incidencias."},
+ {g:"tasa",th:"map",q:"Andalucía: delitos de odio por cada 100.000 habitantes (2025)",v:3.40,u:"por 100.000 hab.",s:"int25",f:"Subió desde 2,59 en 2024."},
+ {g:"tasa",th:"map",q:"Navarra: delitos de odio por cada 100.000 habitantes (2024)",v:14.0,u:"por 100.000 hab.",s:"int24",f:"La tasa más alta de España en 2024."},
+ {g:"tasa",th:"map",q:"País Vasco: delitos de odio por cada 100.000 habitantes (2024)",v:10.8,u:"por 100.000 hab.",s:"int24",f:"Segunda en 2024."},
+ {g:"tasa",th:"total",q:"Media de España: delitos de odio por cada 100.000 habitantes (2024)",v:4.02,u:"por 100.000 hab.",s:"int24",f:"En 2025 subió a 4,92."},
+ {g:"tasa",th:"map",q:"Canarias: delitos de odio por cada 100.000 habitantes (2024)",v:3.50,u:"por 100.000 hab.",s:"int23",f:"Entre las comunidades con menos delitos de odio por habitante."}
+];
+
+const GROUP_NAME = {casos:"Casos registrados",pct:"Encuestas y perfiles (%)",tasa:"Tasa por 100.000 habitantes"};
+const TAG = {casos:"Casos registrados",pct:"Porcentaje",tasa:"Tasa territorial"};
+
+/* ================= ILUSTRACIONES (SVG propias) ================= */
+const PAL = {
+  total:["#1d2b64","#f8cdda"], race:["#0f9b8e","#1e3c72"], lgtb:null, ideo:["#b24592","#f15f79"],
+  gender:["#8e2de2","#4a00e0"], faith:["#355c7d","#6c5b7b"], access:["#0575e6","#021b79"],
+  home:["#614385","#516395"], police:["#141e30","#35577d"], child:["#f7971e","#d9480f"],
+  threat:["#cb2d3e","#5a0d18"], phone:["#00b4db","#0050a0"], map:["#11998e","#155e43"],
+  scale:["#3a6073","#16222a"], eye:["#42275a","#734b6d"], work:["#c79081","#7a3e2f"],
+  school:["#f2994a","#9b3a12"], check:["#1f8a4c","#0b3d24"]
+};
+const RAINBOW = ["#e40303","#ff8c00","#ffed00","#008026","#004dff","#750787"];
+
+const ICON = {
+  total:'<path d="M14 86V54h14v32zM38 86V34h14v52zM62 86V44h14v42zM86 86V18h14v68z" fill="#fff"/><path d="M8 90h98" stroke="#fff" stroke-width="5" stroke-linecap="round"/>',
+  race:'<circle cx="57" cy="55" r="38" fill="none" stroke="#fff" stroke-width="6"/><ellipse cx="57" cy="55" rx="16" ry="38" fill="none" stroke="#fff" stroke-width="5"/><path d="M21 42h72M21 68h72" stroke="#fff" stroke-width="5"/>',
+  lgtb:'<path d="M57 92S16 66 16 38c0-14 11-24 24-24 8 0 14 4 17 10 3-6 9-10 17-10 13 0 24 10 24 24 0 28-41 54-41 54z" fill="#fff"/>',
+  ideo:'<path d="M18 46h16l40-22v66L34 68H18z" fill="#fff"/><path d="M28 68l8 22h12l-6-22" fill="#fff"/><path d="M86 40c6 6 6 20 0 26M94 32c10 12 10 30 0 42" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>',
+  gender:'<circle cx="45" cy="44" r="20" fill="none" stroke="#fff" stroke-width="6"/><path d="M45 64v26M34 80h22" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="70" cy="56" r="20" fill="none" stroke="#fff" stroke-width="6"/><path d="M84 42l14-14M86 28h12v12" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none"/>',
+  faith:'<path d="M57 20l30 18v6H27v-6z" fill="#fff"/><path d="M33 48h8v32h-8zM53 48h8v32h-8zM73 48h8v32h-8z" fill="#fff"/><path d="M24 84h66v8H24z" fill="#fff"/>',
+  access:'<circle cx="54" cy="20" r="9" fill="#fff"/><path d="M50 32v28h26l10 24" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 44h20" stroke="#fff" stroke-width="7" stroke-linecap="round"/><path d="M40 52a22 22 0 1 0 30 30" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>',
+  home:'<path d="M57 18L16 52h10v38h62V52h10z" fill="none" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><path d="M48 90V66h18v24" stroke="#fff" stroke-width="6" fill="none"/>',
+  police:'<path d="M57 14l34 12v24c0 22-15 36-34 44-19-8-34-22-34-44V26z" fill="#fff"/><path d="M57 34l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z" fill="#35577d"/>',
+  child:'<circle cx="57" cy="28" r="13" fill="#fff"/><path d="M38 54c0-8 8-12 19-12s19 4 19 12v8H38z" fill="#fff"/><path d="M44 62l-4 28M70 62l4 28" stroke="#fff" stroke-width="8" stroke-linecap="round"/>',
+  threat:'<path d="M57 14l44 76H13z" fill="none" stroke="#fff" stroke-width="7" stroke-linejoin="round"/><path d="M57 42v22" stroke="#fff" stroke-width="7" stroke-linecap="round"/><circle cx="57" cy="76" r="5" fill="#fff"/>',
+  phone:'<rect x="34" y="12" width="46" height="84" rx="8" fill="none" stroke="#fff" stroke-width="6"/><path d="M46 36h22M46 48h16M46 60h22" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="57" cy="84" r="4" fill="#fff"/>',
+  map:'<path d="M57 96S26 62 26 42a31 31 0 0 1 62 0c0 20-31 54-31 54z" fill="#fff"/><circle cx="57" cy="42" r="11" fill="#11998e"/>',
+  scale:'<path d="M57 16v72M34 90h46M22 32h70" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 32L10 60h24zM92 32L80 60h24z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><path d="M10 60a12 8 0 0 0 24 0M80 60a12 8 0 0 0 24 0" fill="#fff"/>',
+  eye:'<path d="M10 56s18-30 47-30 47 30 47 30-18 30-47 30S10 56 10 56z" fill="none" stroke="#fff" stroke-width="6"/><circle cx="57" cy="56" r="14" fill="#fff"/><path d="M20 94L94 18" stroke="#fff" stroke-width="6" stroke-linecap="round"/>',
+  work:'<rect x="14" y="34" width="86" height="56" rx="8" fill="#fff"/><path d="M42 34V24h30v10" stroke="#fff" stroke-width="6" fill="none"/><path d="M14 58h86" stroke="#7a3e2f" stroke-width="5"/>',
+  school:'<path d="M57 22L8 44l49 22 49-22z" fill="#fff"/><path d="M30 56v18c8 8 19 12 27 12s19-4 27-12V56" stroke="#fff" stroke-width="6" fill="none"/><path d="M98 46v28" stroke="#fff" stroke-width="5" stroke-linecap="round"/>',
+  check:'<circle cx="57" cy="56" r="40" fill="none" stroke="#fff" stroke-width="6"/><path d="M38 57l13 13 25-27" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+};
+
+function artSVG(th, seed){
+  let bg;
+  if(th==="lgtb"){
+    const h=100/6;
+    bg = RAINBOW.map((c,i)=>`<rect x="0" y="${i*h}" width="100" height="${h+0.5}" fill="${c}"/>`).join("");
+  }else{
+    const [a,b]=PAL[th]||PAL.total;
+    bg = `<defs><linearGradient id="g${seed}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="100" height="100" fill="url(#g${seed})"/>`;
+  }
+  // patrón de iconos grandes y difuminados para dar textura de "imagen"
+  let deco="";
+  const r = mulberry(seed);
+  for(let i=0;i<7;i++){
+    const x=r()*110-15, y=r()*110-15, s=0.18+r()*0.32, rot=Math.floor(r()*60-30);
+    deco += `<g transform="translate(${x} ${y}) scale(${s}) rotate(${rot} 57 57)" opacity="${(0.06+r()*0.08).toFixed(2)}">${ICON[th]}</g>`;
+  }
+  // círculos de luz
+  const glow = `<circle cx="${20+r()*60}" cy="${20+r()*60}" r="40" fill="#fff" opacity=".07"/>`;
+  return `<svg class="art" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${bg}${glow}${deco}</svg>`;
+}
+function iconSVG(th){ return `<svg class="ico" viewBox="0 0 114 108" xmlns="http://www.w3.org/2000/svg">${ICON[th]}</svg>`; }
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ================= FORMATO ================= */
+function fmt(d,v){
+  if(v===undefined) v=d.v;
+  const dec = (d.g==="casos")?0:(Number.isInteger(d.v)?0:(d.g==="tasa"?2:1));
+  let s = v.toLocaleString("es-ES",{minimumFractionDigits:dec,maximumFractionDigits:dec});
+  if(d.v===22.4||d.v===16.25){ s=v.toLocaleString("es-ES",{minimumFractionDigits:d.v===16.25?2:1,maximumFractionDigits:d.v===16.25?2:1}); }
+  return d.u==="%"? s+" %" : s;
+}
+function unitText(d){ return d.u==="%"? "" : d.u; }
+
+/* ================= ESTADO ================= */
+let mode="mix", score=0, best=0, left=null, right=null, used=new Set(), busy=false, idSeq=0;
+try{ best = +localStorage.getItem("masomenos_best")||0; }catch(e){}
+const $=id=>document.getElementById(id);
+$("hi").textContent=best;
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $(id).classList.add("on");
+  $("scores").style.display = (id==="game")?"flex":"none";
+  window.scrollTo(0,0);
+}
+
+function pool(g){ return D.map((d,i)=>i).filter(i=>D[i].g===g); }
+function pick(g, exclude){
+  let p = pool(g).filter(i=>!used.has(i) && i!==exclude && D[i].v!==D[exclude]?.v);
+  if(p.length===0){ pool(g).forEach(i=>used.delete(i)); p = pool(g).filter(i=>i!==exclude && D[i].v!==D[exclude]?.v); }
+  const i = p[Math.floor(Math.random()*p.length)];
+  used.add(i); return i;
+}
+function startGroup(){
+  if(mode!=="mix") return mode;
+  const gs=["casos","pct","tasa"], w=[0.45,0.35,0.2];
+  let r=Math.random(),acc=0; for(let k=0;k<3;k++){acc+=w[k]; if(r<acc) return gs[k];} return "casos";
+}
+
+function cardHTML(i, revealed){
+  const d=D[i], seed=(idSeq++)*97+i*13+7;
+  return `<div class="card" data-i="${i}">
+    ${artSVG(d.th, seed)}
+    ${iconSVG(d.th)}
+    <span class="tag">${TAG[d.g]}</span>
+    <div class="q">${d.q}</div>
+    ${revealed
+      ? `<div class="has">es de</div><div class="val">${fmt(d)}</div><div class="unit">${unitText(d)}</div>`
+      : `<div class="has">¿es más o menos?</div>
+         <div class="val reveal" style="display:none">0</div><div class="unit reveal" style="display:none">${unitText(d)}</div>
+         <div class="btns">
+           <button class="btn" data-a="hi"><svg viewBox="0 0 24 24"><path d="M12 4l8 10h-5v6H9v-6H4z" fill="currentColor"/></svg>Más</button>
+           <button class="btn" data-a="lo"><svg viewBox="0 0 24 24"><path d="M12 20L4 10h5V4h6v6h5z" fill="currentColor"/></svg>Menos</button>
+         </div>
+         <div class="hint">que ${fmt(D[left])}${D[left].u==="%"?"":" "+D[left].u}</div>`}
+    <div class="src">Fuente: ${SRC[d.s].s}</div>
+  </div>`;
+}
+
+function render(){
+  const t=$("track");
+  t.style.transition="none"; t.style.transform="none";
+  t.innerHTML = cardHTML(left,true)+cardHTML(right,false);
+  t.querySelectorAll(".btn").forEach(b=>b.onclick=()=>answer(b.dataset.a));
+  $("vs").className="vs"; $("vs").innerHTML="VS";
+}
+
+function newGame(){
+  score=0; used=new Set(); $("sc").textContent=0;
+  const g=startGroup();
+  left=pick(g,-1); right=pick(g,left);
+  show("game"); render();
+}
+
+function countUp(el,d,ms=900){
+  const t0=performance.now();
+  function step(t){
+    const k=Math.min(1,(t-t0)/ms), e=1-Math.pow(1-k,3);
+    el.textContent=fmt(d,d.v*e);
+    if(k<1) requestAnimationFrame(step); else el.textContent=fmt(d);
+  }
+  requestAnimationFrame(step);
+}
+
+function answer(a){
+  if(busy) return; busy=true;
+  const L=D[left], R=D[right];
+  const ok = (a==="hi" && R.v>=L.v) || (a==="lo" && R.v<=L.v);
+  const card=$("track").children[1];
+  card.querySelector(".btns").style.display="none";
+  card.querySelector(".hint").style.display="none";
+  card.querySelector(".has").textContent="es de";
+  card.querySelectorAll(".reveal").forEach(e=>e.style.display="");
+  countUp(card.querySelector(".val"),R);
+  setTimeout(()=>{
+    const vs=$("vs");
+    vs.className="vs "+(ok?"ok":"bad");
+    vs.innerHTML= ok
+      ? '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+    const f=$("fact"); f.innerHTML="<b>Dato:</b> "+R.f; f.classList.add("on");
+    if(ok){
+      score++; $("sc").textContent=score;
+      if(score>best){best=score; $("hi").textContent=best; try{localStorage.setItem("masomenos_best",best)}catch(e){}}
+      setTimeout(next, 2300);
+    }else{
+      setTimeout(()=>gameOver(L,R), 2600);
+    }
+  }, 1000);
+}
+
+function next(){
+  $("fact").classList.remove("on");
+  // ¿seguimos en el mismo grupo o saltamos?
+  let g=D[right].g, newLeft=right;
+  if(mode==="mix" && Math.random()<0.3){
+    const others=["casos","pct","tasa"].filter(x=>x!==g);
+    g=others[Math.floor(Math.random()*others.length)];
+    newLeft=pick(g,-1);
+  }
+  const newRight=pick(g,newLeft);
+  const t=$("track");
+  // deslizar: añadimos la nueva carta y desplazamos
+  t.insertAdjacentHTML("beforeend", (()=>{ const tmp=left; left=newLeft; const h=cardHTML(newRight,false); left=tmp; return h; })());
+  if(newLeft!==right){
+    // cambio de grupo: sustituimos la carta revelada por la nueva izquierda
+    t.children[1].outerHTML = cardHTML(newLeft,true);
+  }
+  $("vs").className="vs"; $("vs").innerHTML="VS";
+  const mobile = window.matchMedia("(max-width:760px)").matches;
+  t.style.transition="transform .7s cubic-bezier(.7,0,.2,1)";
+  t.style.transform = mobile ? "translateY(-50%)" : "translateX(-50%)";
+  setTimeout(()=>{ left=newLeft; right=newRight; render(); busy=false; }, 720);
+}
+
+function gameOver(L,R){
+  $("fact").classList.remove("on");
+  busy=false;
+  $("final").textContent=score;
+  const msgs = score>=15? "¡Impresionante! Conoces muy bien la realidad del odio en España." :
+               score>=8 ? "¡Muy bien! Tienes bastante claro el panorama." :
+               score>=3 ? "No está mal. Algunas cifras sorprenden, ¿verdad?" :
+                          "Las cifras del odio suelen sorprender. ¡Prueba otra vez!";
+  $("overMsg").textContent = msgs + (score>=best && score>0 ? " Nuevo récord." : "");
+  $("lastpair").innerHTML = `<div>${L.q}<b>${fmt(L)} ${L.u==="%"?"":L.u}</b></div><div>${R.q}<b>${fmt(R)} ${R.u==="%"?"":R.u}</b></div>`;
+  show("over");
+}
+
+/* ================= TABLA DE DATOS ================= */
+function buildData(){
+  let h="";
+  ["casos","pct","tasa"].forEach(g=>{
+    h+=`<div class="grp">${GROUP_NAME[g]}</div><table><tr><th>Dato</th><th>Cifra</th><th>Fuente</th></tr>`;
+    D.filter(d=>d.g===g).forEach(d=>{
+      h+=`<tr><td>${d.q}</td><td class="n">${fmt(d)}</td><td><a href="${SRC[d.s].u}" target="_blank" rel="noopener">${SRC[d.s].s}</a></td></tr>`;
+    });
+    h+="</table>";
+  });
+  $("tables").innerHTML=h;
+  $("srcs").innerHTML=Object.values(SRC).map(s=>`<li><a href="${s.u}" target="_blank" rel="noopener">${s.t}</a></li>`).join("");
+}
+buildData();
+
+/* ================= EVENTOS ================= */
+document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".mode").forEach(x=>x.classList.remove("sel"));
+  b.classList.add("sel"); mode=b.dataset.m;
+});
+$("play").onclick=newGame; $("again").onclick=newGame; $("dataPlay").onclick=()=>show("intro");
+$("toData").onclick=()=>show("data"); $("overData").onclick=()=>show("data");
+$("overHome").onclick=()=>show("intro"); $("home").onclick=()=>{busy=false;$("fact").classList.remove("on");show("intro")};
+document.addEventListener("keydown",e=>{
+  if(!$("game").classList.contains("on")) return;
+  if(e.key==="ArrowUp") answer("hi");
+  if(e.key==="ArrowDown") answer("lo");
+});
+</script>
+</body>
+</html>
